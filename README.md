@@ -14,7 +14,7 @@ EdgeOutput files are required for the demand calibration.
 The scenario_analysis.py file prepares all the information required for the mathematical optimization.
 
 ## Mathematical optimization
-The calculation_functions.py contains the route (OD-to-link) travel time calculation functions. In grb_problem.py, the mathematical optimization problem is implemented using the gurobipy library. The main.py file executes the code and saves the variables in a .pickle file.
+The RTT_functions.py contains the route (OD-to-link) travel time calculation functions, while the count_function.py map the demand to link traffic counts based on the continuous packet approach. In grb_problem.py, the mathematical optimization problem is implemented using the gurobipy library. The main.py file executes the code and saves the variables in a .pickle file.
 
 ## Reproduced SUMO simulation
 The update_OD.py file can be used to read in the saved variables and change the demand in the .xml file for SUMO simulation.
