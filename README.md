@@ -5,20 +5,17 @@ Traffic Engineering Group, Institute for Transport Planning and Systems, ETH Zur
 ## Introduction
 This repository contains ...
 
-## SUMO scenarios
-An uncongested scenario and a congested scenario are designed for a modified Sioux-Falls network, as shown in the picture below. The SUMO simulation package ... One can ... by changing the ... in the ....xml file.
-<img width="450" height="590" alt="Link_speed_5400" src="https://github.com/user-attachments/assets/21d1609b-0446-44e2-8a86-d52b20ccf376" />
+## SUMO ground-truth scenarios
+An uncongested scenario and a congested scenario are designed for a modified Sioux-Falls network, as shown in the image below. The SUMO simulation packages can be found in the folder SUMO_scenario_uncon and SUMO_scenario_con.
+EdgeOutput files are required for the demand calibration.
 
-## Optimization
+<img width="225" height="295" alt="Link_speed_5400" src="https://github.com/user-attachments/assets/21d1609b-0446-44e2-8a86-d52b20ccf376" />
 
-### Configuration
-In config.py, you can enter information regarding ...
+## Mathematical optimization
+The calculation_functions.py contains the route (OD-to-link) travel time calculation functions. In grb_problem.py, the mathematical optimization problem is implemented using the gurobipy library. The main.py file executes the code and saves the variables in a .pickle file.
 
-### Problem
-model.py contains the model implemention. The model description can be found in the research paper at the bottom of the this README.md. 
-
-### Main
-main.py executes the simulation, post-processing, and visualization.
+## Reproduced SUMO simulation
+The update_OD.py file can be used to read in the saved variables and change the demand in the .xml file for SUMO simulation.
 
 ## To cite
 Coming soon
