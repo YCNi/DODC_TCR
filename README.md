@@ -7,7 +7,7 @@ This repository contains ...
 
 ## SUMO scenarios
 An uncongested scenario and a congested scenario are designed for a modified Sioux-Falls network, as shown in the picture below. The SUMO simulation package ... One can ... by changing the ... in the ....xml file.
-![2X4_network_grid](https://github.com/user-attachments/assets/94f15cb4-b696-4765-affd-9b88afa2b2be)
+<img width="450" height="590" alt="Link_speed_5400" src="https://github.com/user-attachments/assets/21d1609b-0446-44e2-8a86-d52b20ccf376" />
 
 ## Optimization
 
