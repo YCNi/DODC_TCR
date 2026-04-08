@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.sf.net/xsd/sumoConfiguration.xsd">
+
+  <input>
+    <net-file value="sioux_falls_uncon.net.xml"/>
+    <route-files value="sioux_falls_uncon_repro.rou_flow.xml"/>
+	<additional-files value="sioux_falls_uncon_repro.add.xml"/>
+  </input>
+
+  <time>
+    <begin value="0"/>
+	<end value="10800"/>
+	<step-length value="0.25"/>
+  </time>
+
+  <processing>
+	<time-to-teleport value="-1"/>
+	<no-internal-links value="true"/>
+  </processing>
+
+</configuration>
