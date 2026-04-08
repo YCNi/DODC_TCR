@@ -3,7 +3,7 @@ Ying-Chuan Ni <br />
 Traffic Engineering Group, Institute for Transport Planning and Systems, ETH Zurich
 
 ## Introduction
-Existing traffic demand estimation/validation work often neglects the replication of link-level traffic states. This repository showcases the method to calibrate dynamic origin-destination demand that is able to reconstruct the traffic congestion pattern in an urban road network. For more information, the users are referred to the research article.
+Existing traffic demand estimation/validation works often neglected the replication of link-level traffic states. This repository showcases the method to calibrate dynamic origin-destination demand that is able to reconstruct the traffic congestion pattern in an urban road network. For more information, the users are referred to the research article.
 
 ## SUMO ground-truth scenarios
 An uncongested scenario and a congested scenario are designed for a modified Sioux-Falls network, as shown in the image below. The SUMO simulation packages can be found in the folder SUMO_scenario_uncon and SUMO_scenario_con.
