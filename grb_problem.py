@@ -4,16 +4,15 @@ from gurobipy import GRB
 
 from count_function import calculate_count
 
-def save_results(model):
-    # Save the optimization results using pickle
+def save_results(model,scenario):
     results = {
         "Variable": {v.VarName: v.X for v in model.getVars()},
         "Objective": model.ObjVal
     }
-    with open(directory+'results'+scenario+case+'.pickle', 'wb') as handle:
+    with open(directory+'results'+scenario+'.pickle', 'wb') as handle:
         pickle.dump(results, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-def opt_model(tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q_entry, zeros, fc, fd):
+def opt_model(scenario,tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q_entry, zeros, fc, fd, K_JAM):
     m = gp.Model()
     x = m.addVars(odk_keys, vtype=GRB.INTEGER, name="x", lb=0)  # OD demand every 15-min interval
     a = m.addVars(lk_evaluation_keys+lk_entry_keys, vtype=GRB.CONTINUOUS, name="a", lb=0)
@@ -39,12 +38,12 @@ def opt_model(tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q_entry, z
         m.addConstr(ud[l,k] >= (l_den[l,k] - d_mid[l,k]) / fd)
         m.addConstr(ud[l,k] >= - (l_den[l,k] - d_mid[l,k]) / fd)
     for (l,k) in lk_entry_keys:
-        m.addConstr(ud[l,k] >= p[l,k] * (k_jam - d_mid[l,k]) / k_jam)
-        m.addConstr(ud[l,k] >= - p[l,k] * (k_jam - d_mid[l,k]) / k_jam)
+        m.addConstr(ud[l,k] >= p[l,k] * (K_JAM - d_mid[l,k]) / K_JAM)
+        m.addConstr(ud[l,k] >= - p[l,k] * (K_JAM - d_mid[l,k]) / K_JAM)
     # penalty activation
     for (l,k) in lk_entry_keys:
-        m.addConstr(d_mid[l,k] >= k_jam - M * (1-p[l,k]))
-        m.addConstr(d_mid[l,k] <= k_jam + M * p[l,k])
+        m.addConstr(d_mid[l,k] >= K_JAM - M * (1-p[l,k]))
+        m.addConstr(d_mid[l,k] <= K_JAM + M * p[l,k])
     for (o,d,k) in odk_keys:
         m.addConstr(ux[o,d,k] >= (0 - x[o,d,k]) / q_entry[o,k])
         m.addConstr(ux[o,d,k] >= - (0 - x[o,d,k]) / q_entry[o,k])
@@ -80,4 +79,4 @@ def opt_model(tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q_entry, z
     m.setParam('TimeLimit', 1 * 60 * 60)
     m.Params.LogToConsole = 1
     m.optimize()
-    save_results(m)
+    save_results(m,scenario)
