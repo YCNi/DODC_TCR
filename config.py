@@ -44,8 +44,12 @@ with open(directory+'OD_route.pickle', 'rb') as handle:
 with open(directory+'link_count.pickle', 'rb') as handle:
     link_count = pickle.load(handle)
 
+FC = max(link_count.values())
+
 with open(directory+'link_den.pickle', 'rb') as handle:
     link_den = pickle.load(handle)
+
+FD = max(link_den.values())
 
 link_accum = {}
 for (l,k) in lk_keys:
