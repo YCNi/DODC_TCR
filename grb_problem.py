@@ -1,6 +1,7 @@
 import pickle
 import gurobipy as gp
 from gurobipy import GRB
+from config import K, T, o_keys, odk_keys, lk_keys, odl_keys, lk_evaluation_keys, lk_entry_keys, link_length, lane_num
 
 from count_function import calculate_count
 
@@ -9,7 +10,7 @@ def save_results(model,scenario):
         "Variable": {v.VarName: v.X for v in model.getVars()},
         "Objective": model.ObjVal
     }
-    with open(directory+'results'+scenario+'.pickle', 'wb') as handle:
+    with open('results'+scenario+'.pickle', 'wb') as handle:
         pickle.dump(results, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def opt_model(scenario,tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q_entry, zeros, fc, fd, K_JAM):
@@ -27,8 +28,7 @@ def opt_model(scenario,tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q
     obj += gp.quicksum(ud[l,k]**2 for (l,k) in lk_evaluation_keys)
     obj += gp.quicksum(ud[l,k]**2 for (l,k) in lk_entry_keys)
     obj += gp.quicksum((ux[o,d,k] ** 2) for (o,d,k) in odk_keys)
-
-    # count
+    # count mapping
     c = calculate_count(T, tt_OD_to_upstream, K, lk_keys, odl_keys, x)
     # errors
     for (l,k) in lk_evaluation_keys:
@@ -50,11 +50,11 @@ def opt_model(scenario,tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q
     # intermediate accum
     for (l,k) in (lk_evaluation_keys+lk_entry_keys):
         if k == K[0]:
-            m.addConstr(d_mid[l,k] == a[l,k] / 2 / (all_link_length[l]/1000) / all_lane_num[l])
+            m.addConstr(d_mid[l,k] == a[l,k] / 2 / (link_length[l]/1000) / lane_num[l])
         else:
-            m.addConstr(d_mid[l,k] == (a[l,k-T] + a[l,k]) / 2 / (all_link_length[l]/1000) / all_lane_num[l])
-    # inflow and outflow
-    q = calculate_count(T, tt_OD_to_upstream, K, lk_keys, odl_keys, x)
+            m.addConstr(d_mid[l,k] == (a[l,k-T] + a[l,k]) / 2 / (link_length[l]/1000) / lane_num[l])
+    # inflow and outflow mapping
+    q = c
     g = calculate_count(T, tt_OD_to_downstream, K, lk_keys, odl_keys, x)
     # link accumulation update
     for (l,k) in (lk_evaluation_keys+lk_entry_keys):
@@ -64,7 +64,7 @@ def opt_model(scenario,tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q
             m.addConstr(a[l,k] == a[l,k-T] + q[l,k] - g[l,k])
     # link accumulation constraint
     for (l,k) in (lk_evaluation_keys):
-        m.addConstr(a[l,k] <= k_jam/1000 * all_link_length[l] * all_lane_num[l])
+        m.addConstr(a[l,k] <= K_JAM/1000 * link_length[l] * lane_num[l])
     # inflow at origins
     for k in K:
         for o in o_keys: # each origin node
@@ -73,7 +73,7 @@ def opt_model(scenario,tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q
     for (o,d) in zeros:
         for k in K:
             m.addConstr(x[o,d,k] == 0)
-
+    # problem setting
     m.setObjective(obj, GRB.MINIMIZE)
     m.write('m.lp')
     m.setParam('TimeLimit', 1 * 60 * 60)
