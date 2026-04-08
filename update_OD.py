@@ -18,7 +18,7 @@ def update_OD(OD):
             o_d = item.attrib['id'][2:].split('_')[0]  # ex:f_3-56_21600
             ori = o_d.split('to')[0]
             des = o_d.split('to')[1]
-            interv = int(item.attrib['begin'])  # check interv type
+            interv = int(item.attrib['begin'])
             new_demand = OD[ori, des, interv]
             item.attrib['number'] = repr(new_demand)
     route_file.write(directory+'sioux_falls'+scenario+'_repro.rou_flow.xml')
