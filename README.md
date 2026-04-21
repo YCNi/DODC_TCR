@@ -1,4 +1,4 @@
-# Dynamic Origin-Distination Demand Calibration for Network Traffic Congestion Reconstruction
+# Dynamic Origin-Destination Demand Calibration for Network Traffic Congestion Reconstruction
 Ying-Chuan Ni <br />
 Traffic Engineering Group, Institute for Transport Planning and Systems, ETH Zurich
 
