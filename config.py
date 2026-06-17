@@ -8,7 +8,7 @@ with open('params/link_length.pickle', 'rb') as handle:
     link_length = pickle.load(handle)
 
 # number of lanes of all links in the network
-with open('params/all_lane_num.pickle', 'rb') as handle:
+with open('params/lane_num.pickle', 'rb') as handle:
     lane_num = pickle.load(handle)
 
 with open('params/link.pickle', 'rb') as handle:
