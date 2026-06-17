@@ -33,20 +33,20 @@ with open('params/lk_evaluation_keys.pickle', 'rb') as handle:
 with open('params/lk_entry_keys.pickle', 'rb') as handle:
     lk_entry_keys = pickle.load(handle)
 
+with open('params/OD_route.pickle', 'rb') as handle:
+    OD_route = pickle.load(handle)
+
 scenario = '_uncon'
 #scenario = '_con'
 
-directory = 'sumo_scenario'+scenario+'/'
+directory = r'sumo_scenario'+scenario+'/'
 
-with open(directory+'OD_route.pickle', 'rb') as handle:
-    OD_route = pickle.load(handle)
-
-with open(directory+'link_count.pickle', 'rb') as handle:
+with open(directory+'link_count'+scenario+'.pickle', 'rb') as handle:
     link_count = pickle.load(handle)
 
 FC = max(link_count.values())
 
-with open(directory+'link_den.pickle', 'rb') as handle:
+with open(directory+'link_den'+scenario+'.pickle', 'rb') as handle:
     link_den = pickle.load(handle)
 
 FD = max(link_den.values())
@@ -55,7 +55,7 @@ link_accum = {}
 for (l,k) in lk_keys:
     link_accum[l,k] = link_den[l,k] / 1000 * link_length[l] * lane_num[l]
 
-with open(directory+'demand.pickle', 'rb') as handle:
+with open(directory+'demand'+scenario+'.pickle', 'rb') as handle:
     OD_sim = pickle.load(handle)
 
 zero_OD = []
@@ -71,8 +71,8 @@ for (o,d) in od_keys:
             zero_OD.append((o, d))
             break
 
-with open(directory+'inflow.pickle', 'rb') as handle:
+with open(directory+'inflow'+scenario+'.pickle', 'rb') as handle:
     inflow = pickle.load(handle)
 
-with open(directory+'link_TT.pickle', 'rb') as handle:
+with open(directory+'link_TT'+scenario+'.pickle', 'rb') as handle:
     link_TT = pickle.load(handle)
