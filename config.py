@@ -36,8 +36,8 @@ with open('params/lk_entry_keys.pickle', 'rb') as handle:
 with open('params/OD_route.pickle', 'rb') as handle:
     OD_route = pickle.load(handle)
 
-scenario = '_uncon'
-#scenario = '_con'
+#scenario = '_uncon'
+scenario = '_con'
 
 directory = r'sumo_scenario'+scenario+'/'
 

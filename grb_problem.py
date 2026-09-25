@@ -1,9 +1,17 @@
+import os
 import pickle
 import gurobipy as gp
 from gurobipy import GRB
 from config import K, T, o_keys, odk_keys, lk_keys, odl_keys, lk_evaluation_keys, lk_entry_keys, link_length, lane_num
 
 from count_function import calculate_count
+
+#%% Gurobi license
+parent_directory = os.path.dirname(os.path.dirname(__file__))
+# Set the path to your license file
+license_file_path = r"C:\gurobi1300\gurobi.lic" # check!
+# Set the environment variable
+os.environ["GRB_LICENSE_FILE"] = license_file_path
 
 def save_results(model,scenario):
     results = {
@@ -20,13 +28,14 @@ def opt_model(scenario,tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q
     d_mid = m.addVars(lk_evaluation_keys+lk_entry_keys, vtype=GRB.CONTINUOUS, name="d_mid", lb=0)
     uc = m.addVars(lk_evaluation_keys, vtype=GRB.CONTINUOUS, name="uc")  # link count error every 15-min interval
     ud = m.addVars(lk_evaluation_keys+lk_entry_keys, vtype=GRB.CONTINUOUS, name="ud")  # link den error every 15-min interval
-    p = m.addVars(lk_entry_keys, vtype=GRB.BINARY, name="p")
+    #p = m.addVars(lk_entry_keys, vtype=GRB.BINARY, name="p")
     ux = m.addVars(odk_keys, vtype=GRB.CONTINUOUS, name="ux", lb=0)
     M = 999
+    #gamma = len(lk_evaluation_keys) / len(lk_entry_keys) * 10
     # obj
     obj = gp.quicksum(uc[l,k]**2 for (l,k) in lk_evaluation_keys)
     obj += gp.quicksum(ud[l,k]**2 for (l,k) in lk_evaluation_keys)
-    obj += gp.quicksum(ud[l,k]**2 for (l,k) in lk_entry_keys)
+    #obj += gp.quicksum(gamma * ud[l,k]**2 for (l,k) in lk_entry_keys)
     obj += gp.quicksum((ux[o,d,k] ** 2) for (o,d,k) in odk_keys)
     # count mapping
     c = calculate_count(T, tt_OD_to_upstream, K, lk_keys, odl_keys, x)
@@ -37,13 +46,13 @@ def opt_model(scenario,tt_OD_to_downstream, tt_OD_to_upstream, l_count, l_den, q
     for (l,k) in lk_evaluation_keys:
         m.addConstr(ud[l,k] >= (l_den[l,k] - d_mid[l,k]) / fd)
         m.addConstr(ud[l,k] >= - (l_den[l,k] - d_mid[l,k]) / fd)
-    for (l,k) in lk_entry_keys:
-        m.addConstr(ud[l,k] >= p[l,k] * (K_JAM - d_mid[l,k]) / K_JAM)
-        m.addConstr(ud[l,k] >= - p[l,k] * (K_JAM - d_mid[l,k]) / K_JAM)
+    #for (l,k) in lk_entry_keys:
+        #m.addConstr(ud[l,k] >= p[l,k] * (K_JAM - d_mid[l,k]) / K_JAM)
+        #m.addConstr(ud[l,k] >= - p[l,k] * (K_JAM - d_mid[l,k]) / K_JAM)
     # penalty activation
-    for (l,k) in lk_entry_keys:
-        m.addConstr(d_mid[l,k] >= K_JAM - M * (1-p[l,k]))
-        m.addConstr(d_mid[l,k] <= K_JAM + M * p[l,k])
+    #for (l,k) in lk_entry_keys:
+        #m.addConstr(d_mid[l,k] >= K_JAM - M * (1-p[l,k]))
+        #m.addConstr(d_mid[l,k] <= K_JAM + M * p[l,k])
     for (o,d,k) in odk_keys:
         m.addConstr(ux[o,d,k] >= (0 - x[o,d,k]) / q_entry[o,k])
         m.addConstr(ux[o,d,k] >= - (0 - x[o,d,k]) / q_entry[o,k])
