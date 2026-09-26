@@ -36,6 +36,19 @@ with open('params/lk_entry_keys.pickle', 'rb') as handle:
 with open('params/OD_route.pickle', 'rb') as handle:
     OD_route = pickle.load(handle)
 
+o_splits = {}
+split_keys = []
+for o in o_keys:
+    o_splits[o] = {}
+    for (o1,d) in od_keys:
+        if o1 == o:
+            second_link = OD_route[o,d][1]
+            if second_link not in o_splits[o]:
+                o_splits[o][second_link] = []
+                for k in K:
+                    split_keys.append((o, second_link, k))
+            o_splits[o][second_link].append(d)
+
 #scenario = '_uncon'
 scenario = '_con'
 
