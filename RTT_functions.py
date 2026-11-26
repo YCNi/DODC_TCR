@@ -1,25 +1,25 @@
 
-def compute_od_to_downstream_TT(T, K, odl_keys, OD_route, link_tt, lengths):
+def compute_od_to_downstream_TT(T, K, odl_keys, route, link_tt, link_length):
     tt = {}
     for k in K:
         for (o,d,l) in odl_keys:
             tt_sum = 0
             current_time = k
             current_step = k
-            for l_traverse in OD_route[o,d]:
+            for l_traverse in route[o,d]:
                 if current_step <= K[-1]:
-                    remain_dist = lengths[l_traverse]
+                    remain_dist = link_length[l_traverse]
                     link_tt_current = link_tt[l_traverse,current_step]
                     if (current_time + link_tt_current) > (current_step + T) and (current_step + T) <= K[-1]:
                         remain_time = (current_step + T) - current_time
-                        link_speed_current = lengths[l_traverse] / link_tt_current
+                        link_speed_current = link_length[l_traverse] / link_tt_current
                         remain_dist = remain_dist - remain_time * link_speed_current
                         tt_sum += remain_time
                         current_time += remain_time
                         current_step += T
                         while remain_dist > 0:
                             if current_step <= K[-1]:
-                                link_speed_current = lengths[l_traverse] / link_tt[l_traverse,current_step]
+                                link_speed_current = link_length[l_traverse] / link_tt[l_traverse,current_step]
                                 if remain_dist > T * link_speed_current:
                                     tt_sum += T
                                     remain_dist = remain_dist - T * link_speed_current
@@ -46,29 +46,29 @@ def compute_od_to_downstream_TT(T, K, odl_keys, OD_route, link_tt, lengths):
             tt[o,d,l,k] = round(tt_sum,0)
     return tt
 
-def compute_od_to_upstream_TT(T, K, odl_keys, OD_route, link_tt, lengths):
+def compute_od_to_upstream_TT(T, K, odl_keys, route, link_tt, link_length):
     tt = {}
     for k in K:
         for (o,d,l) in odl_keys:
             tt_sum = 0
             current_time = k
             current_step = k
-            for l_traverse in OD_route[o,d]:
+            for l_traverse in route[o,d]:
                 if l_traverse == l:
                     break
                 if current_step <= K[-1]:
-                    remain_dist = lengths[l_traverse]
+                    remain_dist = link_length[l_traverse]
                     link_tt_current = link_tt[l_traverse,current_step]
                     if (current_time + link_tt_current) > (current_step + T) and (current_step + T) <= K[-1]:
                         remain_time = (current_step + T) - current_time
-                        link_speed_current = lengths[l_traverse] / link_tt_current
+                        link_speed_current = link_length[l_traverse] / link_tt_current
                         remain_dist = remain_dist - remain_time * link_speed_current
                         tt_sum += remain_time
                         current_time += remain_time
                         current_step += T
                         while remain_dist > 0:
                             if current_step <= K[-1]:
-                                link_speed_current = lengths[l_traverse] / link_tt[l_traverse, current_step]
+                                link_speed_current = link_length[l_traverse] / link_tt[l_traverse, current_step]
                                 if remain_dist > T * link_speed_current:
                                     tt_sum += T
                                     remain_dist = remain_dist - T * link_speed_current

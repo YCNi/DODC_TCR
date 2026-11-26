@@ -1,3 +1,4 @@
 /.idea
 *.pyc
 *.lp
+.vscode/settings.json

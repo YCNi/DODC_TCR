@@ -33,21 +33,8 @@ with open('params/lk_evaluation_keys.pickle', 'rb') as handle:
 with open('params/lk_entry_keys.pickle', 'rb') as handle:
     lk_entry_keys = pickle.load(handle)
 
-with open('params/OD_route.pickle', 'rb') as handle:
-    OD_route = pickle.load(handle)
-
-o_splits = {}
-split_keys = []
-for o in o_keys:
-    o_splits[o] = {}
-    for (o1,d) in od_keys:
-        if o1 == o:
-            second_link = OD_route[o,d][1]
-            if second_link not in o_splits[o]:
-                o_splits[o][second_link] = []
-                for k in K:
-                    split_keys.append((o, second_link, k))
-            o_splits[o][second_link].append(d)
+with open('params/route.pickle', 'rb') as handle:
+    route = pickle.load(handle)
 
 #scenario = '_uncon'
 scenario = '_con'
@@ -89,3 +76,5 @@ with open(directory+'inflow'+scenario+'.pickle', 'rb') as handle:
 
 with open(directory+'link_TT'+scenario+'.pickle', 'rb') as handle:
     link_TT = pickle.load(handle)
+
+gamma = 0.45
