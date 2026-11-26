@@ -24,16 +24,16 @@ def update_OD(OD):
     route_file.write(directory+'sioux_falls'+scenario+'_repro.rou_flow.xml')
 
 with open('results'+scenario+'.pickle', 'rb') as handle:
-    results_temp = pickle.load(handle)
-Var = results_temp['Variable']
+    results = pickle.load(handle)
+Var = results['Variable']
 OD_opt = read_OD(Var)
 
-OD_opt_all = {}
+OD_opt_exist = {}
 for (o,d) in od_keys:
     for k in K:
         if ((o,d,k) in OD_opt) == True:
-            OD_opt_all[o,d,k] = OD_opt[o,d,k]
+            OD_opt_exist[o,d,k] = OD_opt[o,d,k]
         else:
-            OD_opt_all[o,d,k] = 0
+            OD_opt_exist[o,d,k] = 0
 
-update_OD(OD_opt_all)
+update_OD(OD_opt_exist)
